@@ -12,4 +12,4 @@
 - `` python manage.py migrate ``
 - `` python manage.py runserver `` to start the server
 
-![Image of Flow Chart](https://github.com/txh2020/Blochain_Project/blob/main/Blockchain_Project.png)
+![Image of Flow Chart](https://raw.githubusercontent.com/TXH2020/Blockchain_Project/main/Blockchain_Project.png)
