@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Teacher Portal{% endblock %}
+
+{% block link %}
+<link rel="stylesheet" type="text/css" href="{% static 'teacher_css.css' %}">
+<script> 
+$(document).ready(function(){
+  $(".flip").click(function(){
+    $("#details").slideDown("slow");
+  });
+});
+</script>
+{% endblock %}
+
+{% block logo %}<a class="navbar-brand" style="color: #49688e;">{{request.user.first_name}} {{request.user.last_name}}</a>{% endblock %}
+{% block logout_btn %}<a class="nav-link" href="{% url 'user_logout' %}" style="color: #49688e; text-decoration: none;">Logout</a>{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+  {% for message in messages %}
+    {% if 'upload' in message.tags %}
+        <div class="alert alert-success alert-dismissible fade show" style="text-align: center;border-radius: 0;"><button type="button" class="close" data-dismiss="alert">&times;</button>{{message}}</div>
+    {% elif 'accept' in message.tags %}
+       <div class="alert alert-success alert-dismissible fade show" style="text-align: center;border-radius: 0;"><button type="button" class="close" data-dismiss="alert">&times;</button>{{message}}</div>
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+  <ul class="nav nav-tabs fstretch" role="tablist">
+    <li class="nav-item stretch">
+      <a class="nav-link active text" data-toggle="tab" href="#prequest">Pending Requests</a>
+    </li>
+    <li class="nav-item stretch">
+      <a class="nav-link text" data-toggle="tab" href="#arequest">Accepted Requests</a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="prequest" class="container tab-pane active"><br>
+      {% if p_request %}
+      	{% for prequest in p_request %}
+	      <div class="card bg-light text-dark flip" id="{{prequest.id}}">
+	      	<div class="card-body">
+	      	You have received a request to set a paper. Click to get more details.
+		      	<div class="details" id="details"><br>
+              Subject Code: <span style="color: #49688e;">{{prequest.s_code}}</span><br>
+		      		Course: <span style="color: #49688e;">{{request.user.course}}</span><br>
+		      		Semester: <span style="color: #49688e;">{{request.user.semester}}</span><br>
+		      		Branch: <span style="color: #49688e;">{{request.user.branch}}</span><br>
+		      		Subject: <span style="color: #49688e;">{{request.user.subject}}</span><br>
+              Syllabus: <a href="{{prequest.syllabus.url}}" target="_blank" style="color: #49688e;">Syllabus</a><br>
+              Question Pattern: <a href="{{prequest.q_pattern.url}}" target="_blank" style="color: #49688e;">Question Pattern</a><br>
+              Total Marks: <span style="color: #49688e;">50</span><br>
+              Deadline: <span style="color: #49688e;">{{prequest.deadline}}</span><br><br>
+              <form method="POST">{% csrf_token %}
+		      		  <input type="text" name="b_id" value="{{prequest.id}}" style="display: none;">
+                <input type="submit" class="btn btn-primary accept" name="accept" value="Accept">
+		      		  <button type="button" class="btn btn-danger reject">Reject</button>
+              </form>
+		      	</div>
+	      	</div>
+	      </div><br>
+      	{% endfor %}
+      {% else %}
+	      <div class="card bg-light text-dark" id="flip">
+	      	<div class="card-body" style="text-align: center;">
+	      	No requests received.
+	      	</div>
+	      </div><br>
+	   {% endif %}
+
+    </div>
+    <div id="arequest" class="container tab-pane fade"><br>
+      {% if a_request %}
+        {% for arequest in a_request %}
+        <div class="card bg-light text-dark" id="{{arequest.id}}">
+          <div class="card-body">
+          You have accepted the request to set this paper. Click to get more details.
+            <div><br>
+              Subject Code: <span style="color: #49688e;">{{arequest.s_code}}</span><br>
+              Course: <span style="color: #49688e;">{{request.user.course}}</span><br>
+              Semester: <span style="color: #49688e;">{{request.user.semester}}</span><br>
+              Branch: <span style="color: #49688e;">{{request.user.branch}}</span><br>
+              Subject: <span style="color: #49688e;">{{request.user.subject}}</span><br>
+              Syllabus: <a href="{{arequest.syllabus.url}}" target="_blank" style="color: #49688e;">Syllabus</a><br>
+              Question Pattern: <a href="{{arequest.q_pattern.url}}" target="_blank" style="color: #49688e;">Question Pattern</a><br>
+              Total Marks: <span style="color: #49688e;">50</span><br>
+              Deadline: <span style="color: #49688e;">{{arequest.deadline}}</span><br>
+              {% if not arequest.private_key %}
+              <br>
+              <form method="POST" enctype="multipart/form-data">{% csrf_token %}
+                <div class="custom-file mb-3">
+                  <input type="file" class="custom-file-input" id="customFile" name="paper" accept="application/pdf" required>
+                  <label class="custom-file-label" for="customFile">Choose file</label>
+                </div>
+                  <div class="modal fade" id="myModal">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">                          
+
+                          <div class="modal-body">
+                            Paper once uploaded cannot be changed. Are you sure you want to continue with the upload?
+                            <div class="buttons">
+                              <button type="submit" class="btn btn-success btns">Continue</button>
+                              <button class="btn btn-danger btns" class="close" data-dismiss="modal">Go back</button>
+                            </div>
+                          </div>
+                          
+                        </div>
+                      </div>
+                  </div>
+              </form>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#myModal" id="u_btn" disabled>Upload</button>
+                {% endif %}
+            </div>
+          </div>
+        </div><br>
+        {% endfor %}
+      {% else %}
+        <div class="card bg-light text-dark no-request">
+          <div class="card-body" style="text-align: center;">
+          No requests Accepted.
+          </div>
+        </div><br>
+     {% endif %}
+
+    </div>
+  </div>
+
+<script type="text/javascript">
+
+$(".custom-file-input").on("change", function() {
+  var fileName = $(this).val().split("\\").pop();
+  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+  $('#u_btn ').attr('disabled',false);
+});
+
+</script>
+
+{% endblock %}

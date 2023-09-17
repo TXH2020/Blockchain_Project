@@ -1,0 +1,42 @@
+.alert{
+	text-align: center;
+	border-radius: 0 !important;
+}
+.fstretch{
+	width: 100vw !important;
+}
+.stretch{
+	width: 50vw;
+	text-align: center;
+	margin: 0 auto;
+}
+.text{
+	font-size: 20px !important;
+	color: rgba(0,0,0,0.5) !important;
+}
+.active{
+	color: #49688e !important;
+}
+#form,.table-responsive{
+	width: 60vw !important;
+	margin: 0 auto;
+}
+.form-control{
+	box-shadow: none !important;
+}
+.btn-primary{
+	margin: 0 10px 0 0;
+	background-color: #49688e !important;
+	border: none !important;
+}
+.btn-primary:hover{
+	background-color: #007BFF !important;
+}
+.btn:focus,.btn:focus:active{
+	box-shadow: none !important;
+}
+th{
+  color: #49688e !important;
+  font-weight: lighter !important;
+  font-size: 18px !important;
+}

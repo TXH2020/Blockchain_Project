@@ -1,0 +1,41 @@
+.fstretch{
+	width: 100vw;
+}
+.stretch{
+	width: 50vw;
+	text-align: center;
+	margin: 0 auto;
+}
+.text{
+	font-size: 20px !important;
+	color: rgba(0,0,0,0.5) !important;
+}
+.active{
+	color: #49688e !important;
+}
+.details{
+	display: none;
+}
+.card{
+	cursor: pointer !important;
+}
+.btn-primary{
+	width: 100px;
+	margin: 0 10px 0 0;
+	background-color: #49688e !important;
+	border: none !important; 
+}
+.btn-primary:hover{
+	background-color: #007BFF !important;
+}
+.btn-danger{
+	width: 100px;
+	margin: 0 10px 0 0;
+}
+.buttons{
+	margin: 30px !important;
+	text-align: center !important;
+}
+.btns{
+	margin: 0 20px 0 20px;
+}

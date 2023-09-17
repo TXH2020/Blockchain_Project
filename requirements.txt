@@ -1,0 +1,6 @@
+django
+psycopg2-binary
+cryptography
+requests
+ipfsapi
+django-ipfs-storage

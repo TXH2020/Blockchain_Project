@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}COE Portal{% endblock %}
+
+{% block link %}
+<link rel="stylesheet" type="text/css" href="{% static 'coe_css.css' %}">
+{% endblock %}
+
+{% block logo %}<a class="navbar-brand" style="color: #49688e;">{{request.user.first_name}} {{request.user.last_name}}</a>{% endblock %}
+
+{% block logout_btn %}<a class="nav-link" href="{% url 'user_logout' %}" style="color: #49688e; text-decoration: none;">Logout</a>{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+  {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" style="text-align: center;border-radius: 0;"><button type="button" class="close" data-dismiss="alert">&times;</button>{{message}}</div>
+  {% endfor %}
+{% endif %}
+
+<div class="alerts"></div>
+
+  <ul class="nav nav-tabs fstretch" role="tablist">
+    <li class="nav-item stretch">
+      <a class="nav-link active text" data-toggle="tab" href="#prequest">Send Request</a>
+    </li>
+    <li class="nav-item stretch">
+      <a class="nav-link text" data-toggle="tab" href="#arequest">Request Status</a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="prequest" class="container tab-pane active"><br>
+
+	  <form method="POST" id="form" submit-url="{% url 'get_teachers' %}">{% csrf_token %}
+	    <div class="form-group">
+
+	      <label for="course">Select Course:</label>
+	      <select class="form-control" id="course" name="course" required>
+	        <option>B.E.</option>
+	        <option>M.E.</option>
+	      </select>
+	      <br>
+	      <label for="semester">Select Semester:</label>
+	      <select class="form-control" id="semester" name="semester" required>
+	        <option>I</option>
+	        <option>II</option>
+	        <option>III</option>
+	        <option>IV</option>
+	        <option>V</option>
+	        <option>VI</option>
+	        <option>VII</option>
+	        <option>VIII</option>
+	      </select>
+	      <br>
+	      <label for="branch">Select Branch:</label>
+	      <select class="form-control" id="branch" name="branch" required>
+	        <option>CSE</option>
+	        <option>IT</option>
+	        <option>ECE</option>
+	        <option>EEE</option>
+	        <option>Mech</option>
+	        <option>BioTech</option>
+	      </select>	      
+	  	  <br>
+	      <label for="subject">Select Subject:</label>
+	      <select class="form-control" id="subject" name="subject" required>
+	        <option>Compiler Design</option>
+	        <option>Digital Signal Processing</option>
+	        <option>Cloud Computing</option>
+	        <option>Agile Development</option>
+	      </select>
+	      <br><br>
+
+	      <div style="text-align: center;">
+	      	<button type="submit" class="btn btn-primary" style="width: 100px; margin: 0 40px 20px 40px;" id="f_submit">Submit</button>
+	      	<button type="submit" class="btn btn-primary" style="width: 100px; margin: 0 40px 20px 40px;" data-toggle="modal" data-target="#myModal-1" id="finalize">Finalize</button>
+	      </div>
+	  	</div>
+	  </form>
+
+	<div class="table-responsive" style="margin-top: 100px;display: none;">
+		<table class="table table-bordered table-hover">
+		    <thead>
+		      <tr>
+		        <th>Teacher's Name</th>
+		        <th>Request</th>
+		      </tr>
+		    </thead>
+		    <tbody id="getteachers">
+		    </tbody>
+		  </table>
+    </div>
+</div>
+
+    <div id="arequest" class="container tab-pane fade">
+    	{% if arr %}
+		<div class="table-responsive table-hover" style="margin-top: 40px;">
+			<table class="table table-bordered" id="myTable">
+			    <thead>
+			      <tr>
+			        <th>Teacher's Name</th>
+			        <th>Request Status</th>
+			      </tr>
+			    </thead>
+			    <tbody>
+			    	{% for a in arr %}
+			    	<tr>
+			    		<td>{{a.name}}</td>
+			    		{% if a.status == 'Pending' %}
+			    		<td style="color: red;">{{a.status}}</td>
+			    		{% elif a.status == 'Accepted' %}
+			    		<td style="color: orange;">{{a.status}}</td>
+			    		{% else %}
+			    		<td style="color: green;">{{a.status}}</td>
+			    		{% endif %}
+			    	</tr>
+			    	{% endfor %}
+			    </tbody>
+			  </table>
+	    </div>
+	    {% else %}
+        <div class="card bg-light text-dark no-request" style="margin-top: 40px;">
+          <div class="card-body" style="text-align: center;">
+          No Sent Requests.
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="show" style="display: none;">
+	     	<h4 style="text-align: center; margin: 30px 0 30px 0;">Latest Requests</h4>
+			<div class="table-responsive">
+				<table class="table table-bordered table-hover">
+				    <thead>
+				      <tr>
+				        <th>Teacher's Name</th>
+				        <th>Request Status</th>
+				      </tr>
+				    </thead>
+				    <tbody id="showteachers">
+				    </tbody>
+				  </table>
+		    </div>
+		</div>
+
+    </div>
+ 
+</div>
+
+<div class="modal fade" id="myModal-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h4 class="modal-title" style="color: #49688e;">Select one paper</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <!-- Modal body -->
+        <form method="POST">{% csrf_token %}
+        	<input type="text" name="s_code" id="s_code_field" style="display: none;">
+        	<input type="text" name="t_id" id="t_id" style="display: none;">
+        <div class="modal-body final_teachers">
+        	
+        </div>
+        
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success" id="finalized">Finalize Paper</button>
+        </div>
+        </form>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        
+        <!-- Modal body -->
+        <div class="modal-body">
+        	<form method="POST" id="form-1" submit-url="{% url 'add_teacher' %}" enctype="multipart/form-data">{% csrf_token %}
+        		<input type="text" name="g_id" id="g_id" style="display: none;">
+				<div class="form-group">        	
+		      		<label for="s_code">Subject Code:</label>
+		      		<input type="text" name="s_code" class="form-control" id="s_code" required>
+        		</div>
+        		<label for="customFile-1">Syllabus:</label>
+                <div class="custom-file mb-3">
+                  <input type="file" class="custom-file-input" id="customFile-1" name="syllabus" accept="application/pdf" required>
+                  <label class="custom-file-label" for="customFile-1">Choose file</label>
+                </div>
+                <label for="customFile-2">Question Pattern:</label>
+                <div class="custom-file mb-3">
+                  <input type="file" class="custom-file-input" id="customFile-2" name="q_pattern" accept="application/pdf" required>
+                  <label class="custom-file-label" for="customFile-2">Choose file</label>
+                </div>
+				<div class="form-group">        	
+		      		<label for="deadline">Select Deadline:</label>
+		      		<input type="Date" name="deadline" class="form-control" id="deadline" required>
+        		</div>
+        </div>
+        
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Confirm Request</button>
+        </div>
+        	</form>
+      </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+	
+function check(ans){
+	document.getElementById("t_id").value=ans;}
+
+$(document).ready(function() {
+	var g_id=0;
+	var btn_click = 0;
+
+	$('#f_submit').click(function(){
+		btn_click = 0;
+	})
+
+	$('#finalize').click(function(){
+		btn_click = 1;
+	})
+
+    $('#form').submit(function() { // catch the form's submit event
+        $.ajax({ // create an AJAX call...
+            data: $(this).serialize(), // get the form data
+            type: $(this).attr('method'), // GET or POST
+            url: $(this).attr('submit-url'), // the file to call
+            success: function(data) {
+            s_code = data.s_code;
+            queryset2 = data.queryset2;
+            data = data.queryset;
+            if(btn_click==1){
+            var p_no=1;
+            $('.final_teachers').empty();
+            $('#s_code_field').val(s_code);
+            $('#finalized').attr('disabled',false);
+            if(queryset2.length>0){
+            for(teacher of queryset2){
+            	$(".final_teachers").append('<div class="custom-control custom-radio"><input type="radio" class="custom-control-input" id="'+ teacher["id"] + '" name="papers" onclick="check(this.id)" required><label class="custom-control-label" for="'+ teacher["id"]+'">Paper'+" "+p_no+'</label></div> ');
+            	p_no = p_no+1;
+            }}
+            else{
+            $('.final_teachers').html("No uploaded question papers found!");
+            $('#finalized').attr('disabled',true);}
+        }
+            else
+            {
+            if(data.length>0){
+            	$('.alerts').empty();
+            	$('#getteachers').empty();
+            	for(teacher of data){
+            		$('.table-responsive').css("display","block");
+            		$('#s_code').val(s_code);
+            		$('#getteachers').append('<tr id="row_' + teacher["id"] +'"><td>'+ teacher["first_name"] + " " + teacher["last_name"] + '</td><td>' + '<button class="btn btn-primary send_request" id="' + teacher["id"] + '">Send Request</button></td></tr>');}
+            		$('html, body').animate({
+    					scrollTop: ($('.table-responsive').offset().top)
+						},500);
+            }
+            else{
+              $(window).scrollTop(0);
+              $(".alerts").html('<div class="alert alert-danger alert-dismissible fade show"><button type="button" class="close" data-dismiss="alert">&times;</button>No results found!</div>');}}
+
+			    $(".send_request").click(function(){
+			    	$("#myModal").modal("show");
+			    		g_id = this.id;
+			    		$('#g_id').val(g_id);
+			    });
+
+            },
+        });
+        return false;
+    });
+
+    $('#form-1').submit(function(){
+    	var data = new FormData($('#form-1').get(0));
+    	$.ajax({
+    		data: data,
+    		type: $(this).attr('method'),
+    		url: $(this).attr('submit-url'),
+            cache: false,
+            processData: false,
+            contentType: false,
+    		success: function(new_data){
+    			new_data = new_data.new_teacher;
+    			$('.show').css('display','block');
+    			$('.card').css('display','none');
+    			$('.alerts').empty();
+	            $(".alerts").html('<div class="alert alert-success alert-dismissible fade show"><button type="button" class="close" data-dismiss="alert">&times;</button>Request Sent! This request can be tracked in Request status section.</div>');
+	            $("#myModal").modal("hide");
+	            $("#row_"+g_id).remove();
+	            $(window).scrollTop(0);
+	            for(teacher of new_data){
+	            	$('#showteachers').append('<tr><td>' + teacher["first_name"] + " " + teacher["last_name"] +  '</td><td style="color:red;"> Pending </td></tr>');
+	            }
+    		},
+    	});
+    	return false;
+    });
+
+});
+
+$(".custom-file-input").on("change", function() {
+  var fileName = $(this).val().split("\\").pop();
+  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+});
+
+</script>
+{% endblock %}
