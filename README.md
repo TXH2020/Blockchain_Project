@@ -10,6 +10,7 @@
 7. Then follow the following steps:
 - `` python manage.py makemigrations ``
 - `` python manage.py migrate ``
+- `` python manage.py createsuperuser``
 - `` python manage.py runserver `` to start the server
 
 ![Image of Flow Chart](https://raw.githubusercontent.com/TXH2020/Blockchain_Project/main/Blockchain_Project.png)
@@ -39,7 +40,6 @@ The hyperledger has been successfully tested. Hence it was felt to use a python 
 ## Steps to fully configure project(on Linux only). Note that you must install golang, docker and hyperledger fabric:
 
 Make sure the below lines are present in the bashrc file:
-
 - export PATH=$PATH:/usr/local/go/bin/
 - export GOPATH=$HOME/go
 - export PATH=/home/kali/fabric-samples/bin:$PATH
@@ -51,18 +51,33 @@ Make sure the below lines are present in the bashrc file:
 - export CORE_PEER_ADDRESS=localhost:7051
 
 Then run the following commands:
-
 - ipfs daemon
 - sudo docker run --name some-postgres3 -p 5432:5432 -e POSTGRES_USER=admin_ems -e POSTGRES_PASSWORD=iamadmin@123 -d postgres
 - Use this command if above container is stopped: sudo docker start some-postgres3
-
-Goto the Blockchain_Project folder and run the following commands
-- sudo su
-- source <bashrc_loc>/.bashrc
-- source <virtualenv>/bin/activate
 
 Place smartcontract.go present in this repo instead of fabric-samples/asset-transfer-basic/chaincode-go/../smartcontract.go
 Goto the fabric samples/test network.
 - sudo ./network.sh up
 - sudo ./network.sh createChannel
 - sudo ./network.sh deployCC  -ccn basic -ccp ../asset-transfer-basic/chaincode-go -ccl go
+
+Goto the Blockchain_Project folder and run the following commands
+- sudo su
+- source <bashrc_loc>/.bashrc
+- source <virtualenv>/bin/activate
+
+Now open a browser. Open localhost:8000. Then open a private tab and goto localhost:8000/admin and enter django superuser credentials.
+
+Then the flow is as follows:
+
+In admin
+- Add subject code
+- Add COE with subject code.
+- Add Teacher with subject code.
+- Add Superintendent with subject code.
+
+In other tab
+- Login as COE. Submit. Send request.
+- Login as Teacher. Submit paper.  ->CreateAsset
+- Login as COE. Finalize paper.    ->ReadAsset
+- Login as superintendent. Download paper.
