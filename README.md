@@ -36,3 +36,33 @@ The hyperledger has been successfully tested. Hence it was felt to use a python 
 - It requires the use of a network profile which is a JSON file that must be manually set.
 - The usage of Certificate Authorities is the most difficult part. The private and public keys have to be copied from the docker containers and pasted in the configuration files of the python SDK. Otherwise the SSL Handshake fails due to certificate verification failure. This was encountered during the development.
 
+## Steps to fully configure project(on Linux only). Note that you must install golang, docker and hyperledger fabric:
+
+Make sure the below lines are present in the bashrc file:
+
+- export PATH=$PATH:/usr/local/go/bin/
+- export GOPATH=$HOME/go
+- export PATH=/home/kali/fabric-samples/bin:$PATH
+- export FABRIC_CFG_PATH=/home/kali/fabric-samples/config/
+- export CORE_PEER_TLS_ENABLED=true
+- export CORE_PEER_LOCALMSPID="Org1MSP"
+- export CORE_PEER_TLS_ROOTCERT_FILE=/home/kali/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+- export CORE_PEER_MSPCONFIGPATH=/home/kali/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+- export CORE_PEER_ADDRESS=localhost:7051
+
+Then run the following commands:
+
+- ipfs daemon
+- sudo docker run --name some-postgres3 -p 5432:5432 -e POSTGRES_USER=admin_ems -e POSTGRES_PASSWORD=iamadmin@123 -d postgres
+- Use this command if above container is stopped: sudo docker start some-postgres3
+
+Goto the Blockchain_Project folder and run the following commands
+- sudo su
+- source <bashrc_loc>/.bashrc
+- source <virtualenv>/bin/activate
+
+Place smartcontract.go present in this repo instead of fabric-samples/asset-transfer-basic/chaincode-go/../smartcontract.go
+Goto the fabric samples/test network.
+- sudo ./network.sh up
+- sudo ./network.sh createChannel
+- sudo ./network.sh deployCC  -ccn basic -ccp ../asset-transfer-basic/chaincode-go -ccl go
