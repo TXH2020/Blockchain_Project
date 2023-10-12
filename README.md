@@ -8,10 +8,10 @@
 5. Activate the virtual environment using `` virtualenv\Scripts\activate `` in Windows and `` source virtualenv/bin/activate `` in Linux
 6. Install all packages using `` pip install -r requirements.txt ``
 7. Then follow the following steps:
-- `` python manage.py makemigrations ``
-- `` python manage.py migrate ``
-- `` python manage.py createsuperuser``
-- `` python manage.py runserver `` to start the server
+- ``python manage.py makemigrations``
+- ``python manage.py migrate``
+- ``python manage.py createsuperuser``
+- ``python manage.py runserver`` to start the server
 
 ![Image of Flow Chart](https://raw.githubusercontent.com/TXH2020/Blockchain_Project/main/Blockchain_Project.png)
 
