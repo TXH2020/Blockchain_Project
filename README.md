@@ -55,6 +55,8 @@ Then run the following commands:
 - sudo docker run --name some-postgres3 -p 5432:5432 -e POSTGRES_USER=admin_ems -e POSTGRES_PASSWORD=iamadmin@123 -d postgres
 - Use this command if above container is stopped: sudo docker start some-postgres3
 
+Install hyperledger fabric through the following command: ``curl -sSL http://bit.ly/2ysbOFE | sudo bash -s``
+
 Place smartcontract.go present in this repo instead of fabric-samples/asset-transfer-basic/chaincode-go/../smartcontract.go
 Goto the fabric samples/test network.
 - sudo ./network.sh up
