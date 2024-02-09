@@ -1,0 +1,6 @@
+{
+	"get/id": "as in url",
+	"create": "post a JSON as follows; {a:b}",
+	"update": "post a JSON as follows; {'ID':id,body:str({a:b})",
+	"delete": "post a JSON as follows; {'ID':id}"
+}
